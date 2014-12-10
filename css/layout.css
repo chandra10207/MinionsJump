@@ -1,0 +1,97 @@
+@charset "utf-8";
+*
+{
+    margin: 0px;
+    padding: 0px;
+}
+#wrapper
+{
+    height:650px;
+    width:400px;
+    margin: 0 auto;	
+    position:relative;
+    overflow: hidden;
+    background-color: antiquewhite;
+}
+	
+.rectangle
+{
+    height:10px;
+    width:50px;
+    background-color:black;
+    position:absolute;
+    margin-right:5px;
+    border-radius: 10px;
+    top:0px;
+    left:0px;
+    z-index: 5;
+}
+.redRectangle
+{
+    height:10px;
+    width:50px;
+    background-color:red;
+    position:absolute;
+    margin-right:5px;
+    border-radius: 10px;
+    top:0px;
+    left:0px;
+    z-index: 5;
+}
+
+.aquaRectangle
+{
+    height:10px;
+    width:50px;
+    background-color:aqua;
+    position:absolute;
+    margin-right:5px;
+    border-radius: 10px;
+    top:0px;
+    left:0px;
+    z-index: 5;
+}
+.player
+{
+    height:40px;
+    width:30px; 
+    background-color: blue;
+    position: absolute;
+    border-radius: 10px;
+    top:0px;
+    left:0px;
+    z-index: 10;
+    /*background-image:*/ 
+    /*background-image: url(../images/Evil_minion1.png);*/
+}
+    
+.opponents
+{
+    height:50px;
+    width:50px;
+    background-color:red;
+    position:absolute;
+    margin-right:5px;
+    top:0px;
+    left:0px;
+}
+
+.bullet
+{
+    height: 20px;
+    width: 10px;
+    background-color: blueviolet;
+    position: absolute;
+    z-index: 7;
+    
+}
+
+.opponent
+{
+    height:30px;
+    width:30px; 
+    background-color: brown;
+    position: absolute;
+    border-radius: 10px;
+    z-index: 8;
+}
