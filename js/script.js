@@ -7,98 +7,102 @@ function MainGame()
     this.rectangle;
     this.rectangleX = 0;
     this.rectangleY = 0;
-    this.fieldMoveDown;
+    this.rectangleMoveDown;
     this.downcounter = 0;
-    this.arrayOfRectangle = [];
-    this.newrectanglelist = [];
+    this.arrayOfRectangle = [];    
     this.gameBodyContainer = document.getElementById("wrapper");
-    this.arrayLength;
-    this.rednum;
-    this.rednumCount;
-    this.redIndexArray = [];
-    this.aquaIndexArray = [];
+    this.arrayLength;   
+    this.breakRectangleIndexArray = [];
+    this.springRectangleIndexArray = [];
     this.fieldInterval = 10;
     this.fastMove = 0;
     this.downInc = 3;
-    this.increment = 1;
+    this.increment = 2;
     this.fastMoveCounter = 0;
-    this.opponentRectangleArray = [];
-    this.opponentContainer;
-    var aa;
-    var opponentObject;
+    this.opponentArray = [];
+    this.gameLevel=1;
+    var playerObj;
     var that = this;
     this.init = function() {
-        that.createAdditionalRectangle();
-        that.createRectangleMainbody();
-        that.createRedrectangle();
+        that.createNormalAdditionalRectangle();
+        that.createNormalRectangle();
+        that.createBreakrectangle();
+        that.createSpringrectangle();
+        playerObj = new Player(that);
+        playerObj.init();
+        that.rectangleMoveDown = setInterval(that.mainGameLoop, 8);
     };
 
-    this.createRectangleMainbody = function() {
-        for (i = 0; i < 650; i += 30)
+    this.createNormalRectangle = function() {
+        for (i = 600; i >0; i -= 30)
         {
             that.rectangle = document.createElement("div");
-            that.rectangle.className = "rectangle";
+            that.rectangle.className = "normalRectangle";
             that.gameBodyContainer.appendChild(that.rectangle);
             that.rectangleX = getrandom(0, 350);
             that.rectangleY = i;
             that.rectangle.style.top = that.rectangleY + "px";
             that.rectangle.style.left = that.rectangleX + "px";
+//            that.rectangle.innerHTML=i;
             that.rectangle.style.color = "red";
             that.arrayOfRectangle.push(that.rectangle);
         }
     };
 
-    this.createAdditionalRectangle = function() {
+    this.createNormalAdditionalRectangle = function() {
         for (i = -5000; i < -10; i += 30)
         {
             that.rectangle = document.createElement("div");
-            that.rectangle.className = "rectangle";
+            that.rectangle.className = "normalRectangle";
             that.gameBodyContainer.appendChild(that.rectangle);
             that.rectangleX = getrandom(0, 350);
             that.rectangleY = i;
             that.rectangle.style.top = that.rectangleY + "px";
             that.rectangle.style.left = that.rectangleX + "px";
+            //that.rectangle.innerHTML=i;
             that.rectangle.style.color = "red";
             that.arrayOfRectangle.push(that.rectangle);
         }
     };
 
-    this.createRedrectangle = function()
+    this.createBreakrectangle = function()
     {
         that.arrayLength = that.arrayOfRectangle.length;
-        for (var i = 0; i < 30; i++)
+        var breakRectangleLength=parseInt(that.arrayLength/10);
+        for (var i = 0; i < breakRectangleLength; i++)
         {
-            var redIndex = getrandom(0, that.arrayLength);
-            var redIndexInt = parseInt(redIndex);
-            if (i < 15)
-            {
-                that.arrayOfRectangle[redIndexInt].className = "redRectangle";
-                that.redIndexArray.push(redIndexInt);
-            }
-            else
-            {
-                that.arrayOfRectangle[redIndexInt].className = "aquaRectangle";
-                that.aquaIndexArray.push(redIndexInt);
-
-            }
+            var breakRectangleIndex = getrandom(0, that.arrayLength);
+            var breakRectangleIndexInt = parseInt(breakRectangleIndex);        
+            that.arrayOfRectangle[breakRectangleIndexInt].className = "breakRectangle";
+            that.breakRectangleIndexArray.push(breakRectangleIndexInt); 
         }
-        aa = new PlayerClass(that);
-        aa.getArray();
-        opponentObject = new Opponent(that);
-        opponentObject.createOpponent();
-        that.mainGameLoop();
-        that.fieldMoveDown = setInterval(that.mainGameLoop, 1);
-
+        
     };
+    
+    this.createSpringrectangle = function()
+    {
+        var springRectangleLength=parseInt(that.arrayLength/15);
+        for (var i = 0; i < springRectangleLength; i++)
+        {
+            var springRectangleIndex = getrandom(0, that.arrayLength);
+            var springRectangleIndexInt = parseInt(springRectangleIndex);           
+            that.arrayOfRectangle[springRectangleIndexInt].className = "springRectangle";
+            that.springRectangleIndexArray.push(springRectangleIndexInt);            
+        }        
+    };
+    
     this.mainGameLoop = function() {
+//        window.requestAnimationFrame(that.mainGameLoop);
         that.counter++;
-        if (that.counter % that.downInc == 0) {
+        if (that.counter % that.downInc == 0)
+        {
             that.rectangleMoveToDown(that.fastMove);
         }
-        if (that.counter % 1 == 0) {
-            aa.manageJump();
+        if (that.counter % 1 == 0)
+        {
+            playerObj.managePlayerJump();
         }
-    }
+    };
 
     function getrandom(start, end) {
         return Math.random() * (end - start) + start;
@@ -106,26 +110,20 @@ function MainGame()
     
     this.forClearInterval=function()
     {
-        clearInterval(that.fieldMoveDown);
+        clearInterval(that.rectangleMoveDown);
     };
-
-    this.getOpponent = function(opponenentarray, aaa)
-    {
-        that.opponentRectangleArray = opponenentarray;
-        that.opponentContainer = aaa;
-    };
+    
     this.rectangleMoveToDown = function(fastMove)
     {
-        that.downcounter++;
+        that.downcounter+=2;
         that.fastMove = fastMove;
-
         if (that.fastMove == 1)
         {
-            if (that.fastMoveCounter < 5)
+            if (that.fastMoveCounter < 20)
             {
-                that.downInc = 3;
-                that.increment = 50;
-                that.downcounter += 49;
+                that.downInc = 1;
+                that.increment = 10;
+                that.downcounter += 8;
                 that.fastMoveCounter++;
             }
             else
@@ -133,24 +131,34 @@ function MainGame()
                 that.fastMove = 0;
                 that.fastMoveCounter = 0;
                 that.downInc = 3;
-                that.increment = 1;
+                that.increment =2;
             }
-
         }
-
         for (var i = 0; i < that.arrayOfRectangle.length; i++)
         {
             var aa = that.arrayOfRectangle[i].style.top;
             var aaInt = parseInt(aa);
             var topFinal = aaInt + that.increment;
             that.arrayOfRectangle[i].style.top = topFinal + "px";
-            if (topFinal > 630)
+            if (topFinal > 620)
             {
                 that.gameBodyContainer.removeChild(that.arrayOfRectangle[i]);
                 that.arrayOfRectangle.splice(i, 1);
             }
         }
-        if (that.downcounter > 5000)
+        for (var i = 0; i < that.opponentArray.length; i++)
+        {
+            var aa = that.opponentArray[i].style.top;
+            var aaInt = parseInt(aa);
+            var topFinal = aaInt + that.increment;
+            that.opponentArray[i].style.top = topFinal + "px";
+            if (topFinal > 570)
+            {
+                that.gameBodyContainer.removeChild(that.opponentArray[i]);
+                that.opponentArray.splice(i, 1);
+            }
+        }
+        if (that.downcounter > 5100)
         {            
             that.forClearInterval();
             alert("LEVEL 1 COMPLETED");
@@ -160,9 +168,9 @@ function MainGame()
 
 
 
-function PlayerClass(game1)
+function Player(thatMainGame)
 {
-    this.game = game1;
+    this.mainGameObj = thatMainGame;
     var goUp = 1;
     this.player;
     this.bullet;
@@ -170,39 +178,52 @@ function PlayerClass(game1)
     this.bulletY;
     this.bulletCreated = 0;
     this.playerX = 200;
-    this.playerY = 500;
+    this.playerY = 400;
     this.counterup = 0;
     this.movePlayerUp;
     this.movePlayerDown;
-    this.gameBodyContainerPlayer;
-    this.arrayRectangle = [];
-    this.arrayRedrectangle = [];
-    var mainGameObject;
+    var opponentObj;
     var that = this;
 
-    this.getArray = function()
+    this.init = function()
     {
-        that.arrayRectangle = that.game.arrayOfRectangle;
-        that.gameBodyContainerPlayer = that.game.gameBodyContainer;
+        opponentObj=new Opponent(that);
+        opponentObj.init();
         that.createPlayer();
     };
     this.createPlayer = function()
     {
         that.player = document.createElement("div");
         that.player.className = "player";
-        that.game.gameBodyContainer.appendChild(that.player);
+        that.mainGameObj.gameBodyContainer.appendChild(that.player);
         that.player.style.left = that.playerX + "px";
         that.player.style.top = that.playerY + "px";
+    };    
+
+    this.managePlayerJump = function() {
+        
+        if (that.bulletCreated == 1)
+        {
+            that.moveBulletUp();
+        }
+        if (goUp == 1) {
+            that.movePlayerUpward();
+
+        } else {
+            that.movePlayerDownward();
+        }
     };
 
     this.movePlayerUpward = function()
     {
-
-        if (that.counterup < 109)
+        if (that.counterup <50)
         {
             that.counterup += 1;
-            that.playerY--;
+            that.playerY-=2;
             that.player.style.top = that.playerY + "px";
+            
+//            that.player.style.backgroundImage="url('../images/moveUp.png')";
+            that.opponentPlayerCollide();
             if (that.playerY < 0)
             {
                 that.playerY = 200;
@@ -213,100 +234,95 @@ function PlayerClass(game1)
         {
             goUp = 0;
             that.counterup = 0;
+//            that.player.style.backgroundImage="url('../images/minionRight.png')";
         }
     };
-
-    this.manageJump = function() {
-
-        if (that.bulletCreated == 1)
-        {
-
-            that.moveBulletUp();
-        }
-        if (goUp == 1) {
-            that.movePlayerUpward();
-
-        } else {
-
-            that.movePlayerDownward();
-        }
-    };
-
-    this.moveBulletUp = function()
-    {
-
-        that.bulletY -= 3;
-        that.bullet.style.top = that.bulletY + "px";
-        if(that.bulletY<10)
-        {
-            that.bulletCreated=0;
-            that.game.gameBodyContainer.removeChild(that.bullet);
-        }
-
-    };
-
+    
     this.movePlayerDownward = function()
     {
-
-        that.playerY += 1;
-        that.player.style.top = that.playerY + "px";
-        that.detectcollide();
+        that.playerY += 2;
+        that.player.style.top = that.playerY + "px";        
+        that.detectPlayerRectanglecollide();
+        that.opponentPlayerCollide();
         that.player.style.color = "red";
-        if (that.playerY > 610)
+        if (that.playerY > 570)
         {
             alert("GAME OVER PLAYER MOVED DOWN");
-            that.game.forClearInterval();
+            that.mainGameObj.forClearInterval();            
+        }
+    };
+    
+    this.changeOpponentImage=function()
+    {
+        for(var i=0;i<that.mainGameObj.opponentArray.length;i++)
+        {
+            var opX=parseInt(that.mainGameObj.opponentArray[i].style.left);
+            if(opX<that.playerX)
+            {
+                that.mainGameObj.opponentArray[i].style.backgroundPosition=-201+"px";
+            }
+            
+            else
+            {
+                that.mainGameObj.opponentArray[i].style.backgroundPosition=-102+"px";
+            }
             
         }
-
-    };
-
-
+        };
+        
     this.createBullet = function()
     {
         that.bullet = document.createElement("div");
         that.bullet.className = "bullet";
-        that.bulletX = that.playerX + 10;
+        that.bulletX = that.playerX + 20;
         that.bullet.style.left = that.bulletX + "px";
         that.bulletY=that.playerY;
         that.bullet.style.top = that.bulletY + "px";
-        that.game.gameBodyContainer.appendChild(that.bullet);
+        that.mainGameObj.gameBodyContainer.appendChild(that.bullet);
         that.bulletCreated = 1;
     };
-
-    this.detectcollide = function()
+    
+    this.moveBulletUp = function()
     {
-        for (var i = 0; i < that.arrayRectangle.length; i++)
+        that.bulletY -= 3;
+        that.bullet.style.top = that.bulletY + "px";
+        that.bulletOpponentCollide();
+        if(that.bulletY<10)
         {
-            var topofrectangle = that.arrayRectangle[i].style.top;
+            that.bulletCreated=0;
+            that.mainGameObj.gameBodyContainer.removeChild(that.bullet);
+        }
+    };
+    
+    
+    this.detectPlayerRectanglecollide = function()
+    {
+        
+        for (var i = 0; i < that.mainGameObj.arrayOfRectangle.length; i++)
+        {
+            var topofrectangle = that.mainGameObj.arrayOfRectangle[i].style.top;
             var tr = parseInt(topofrectangle);
-            var leftofretangle = that.arrayRectangle[i].style.left;
+            var leftofretangle = that.mainGameObj.arrayOfRectangle[i].style.left;
             var lr = parseInt(leftofretangle);
             var rr = lr + 50;
-            var pr = that.playerX + 30;
+            var pr = that.playerX + 50;
             var pl = that.playerX;
-            if (tr == that.playerY + 40 && pl < rr && pr > lr)
+            if (tr == that.playerY + 60 && pl < rr && pr > lr)
+//            if(that.playerX<lr+50 && that.playerX+30>lr && that.playerY<tr+20 && 40+that.playerY>tr )
             {
-
-                if (that.arrayRectangle[i].className == "redRectangle")
+                if (that.mainGameObj.arrayOfRectangle[i].className == "breakRectangle")
                 {
-                    that.game.gameBodyContainer.removeChild(that.arrayRectangle[i]);
-                    that.arrayRectangle.splice(i, 1);
+                    that.mainGameObj.gameBodyContainer.removeChild(that.mainGameObj.arrayOfRectangle[i]);
+                    that.mainGameObj.arrayOfRectangle.splice(i, 1);
                 }
-                else if (that.arrayRectangle[i].className == "aquaRectangle")
-                {
-                    mainGameObject = new MainGame(that);
-                    that.game.fastMove = 1;
-                    var ee = mainGameObject.rectangleMoveToDown(that.game.fastMove);
+                else if (that.mainGameObj.arrayOfRectangle[i].className == "springRectangle")
+                {                    
+                    that.mainGameObj.fastMove = 1;
+                    that.mainGameObj.rectangleMoveToDown(that.mainGameObj.fastMove);
                     goUp = 1;
                 }
-                else if (that.arrayRectangle[i].className == "opponent")
-                {
-                    alert("GAME OVER(YOU ARE COLLIDED WITH OPPONENT)");
-                    that.game.forClearInterval();
-                }
                 else {
-                    that.arrayRectangle[i].style.backgroundColor = "green";
+                    that.mainGameObj.arrayOfRectangle[i].style.backgroundColor = "green";
                     goUp = 1;
                 }
             }
@@ -315,20 +331,49 @@ function PlayerClass(game1)
     };
 
 
+    this.opponentPlayerCollide= function()
+    {
+        for(var i=0;i<that.mainGameObj.opponentArray.length;i++)
+        {
+        var opX=parseInt(that.mainGameObj.opponentArray[i].style.left);
+        var opY=parseInt(that.mainGameObj.opponentArray[i].style.top);              
+        if (that.playerX < opX + 50 && that.playerX + 50 > opX && that.playerY < opY + 60 &&   60 + that.playerY > opY)
+            {       
+                alert("GAME OVER!!!! Player Opponent collision detected");
+                that.mainGameObj.forClearInterval(); 
+            }
+        }       
+    };
+    
+    
+    this.bulletOpponentCollide=function ()
+    {
+        for(var i=0;i<that.mainGameObj.opponentArray.length;i++)
+        {
+        var opX=parseInt(that.mainGameObj.opponentArray[i].style.left);
+        var opY=parseInt(that.mainGameObj.opponentArray[i].style.top);              
+        if (that.bulletX < opX + 50 && that.bulletX + 10 > opX && that.bulletY < opY + 60 &&   40 + that.bulletY > opY)
+            {    
+            that.mainGameObj.gameBodyContainer.removeChild(that.mainGameObj.opponentArray[i]);
+            that.mainGameObj.gameBodyContainer.removeChild(that.bullet);
+            that.mainGameObj.opponentArray.splice(i, 1);            
+            }
+        }      
+    }
+    
     document.onkeydown = function(e) {
-
-
         switch (e.keyCode) {
             case 37:
                 {
                     that.playerX -= 30;
                     that.player.style.left = that.playerX + "px";
+                    that.player.style.backgroundPosition=0+"px";
+                    that.changeOpponentImage();
                     if (that.playerX < 0)
                     {
                         that.playerX = 370;
                         that.player.style.left = that.playerX + "px";
                     }
-
                     break;
                 }
 
@@ -339,14 +384,15 @@ function PlayerClass(game1)
                     that.createBullet();
                     that.bulletCreated = 1;
                 }
-                    break;
-                    
+                    break;                    
                 }
 
             case 39:
                 {
                     that.playerX += 30;
                     that.player.style.left = that.playerX + "px";
+                    that.player.style.backgroundPosition=-50+"px";
+                    that.changeOpponentImage();
                     if (that.playerX > 370)
                     {
                         that.playerX = 0;
@@ -354,60 +400,57 @@ function PlayerClass(game1)
                     }
                     break;
                 }
-
-
-
         }
     };
 }
 
-function Opponent(getMain)
+function Opponent(playerthat)
 {
-    this.mainGameObj = getMain;
-    this.opponents;
-    this.randnum;
-    this.intRandnum;
-    this.container;
-    this.opponentArray = [];
+    this.playerRectObj = playerthat;
+    this.opponent;
+    this.opponentNum;
+    this.opponentX;
+    this.opponentY;
+    this.container;    
+    this.opcObj;
     var that = this;
-    this.getArray = function(array, container)
+    this.init=function ()
     {
-        that.rectanglelist = array;
-        that.container = container;
+        that.createOpponent();
     };
-
+    
     this.createOpponent = function()
     {
-        that.randnum = that.mainGameObj.arrayOfRectangle.length;
-        that.intRandnum = parseInt(this.randnum / 6);
-        for (var i = 0; i < that.intRandnum; i++)
+        that.opponentNum = parseInt(that.playerRectObj.mainGameObj.arrayLength /20);
+        for (var i = 0; i < that.opponentNum; i++)
         {
-            var randnum = getrandom(0, that.randnum);
-            var aa = parseInt(randnum);
-            if (that.mainGameObj.arrayOfRectangle[aa].className = "rectangle") {
-                var topp = that.mainGameObj.arrayOfRectangle[aa].style.top;
-                var topInt = parseInt(topp) - 30;
-                if (topInt < 450)
+            var randnum = getrandom(15, that.playerRectObj.mainGameObj.arrayLength);
+            var opponentIndex = parseInt(randnum);
+            if (that.playerRectObj.mainGameObj.arrayOfRectangle[opponentIndex].className == "normalRectangle")
+            {
+                var ot = that.playerRectObj.mainGameObj.arrayOfRectangle[opponentIndex].style.top;
+                that.opponentY = parseInt(ot) - 60;
+                if (that.opponentY < 200)
                 {
-                    that.opponents = document.createElement("div");
-                    that.opponents.className = "opponent";
-                    that.mainGameObj.gameBodyContainer.appendChild(that.opponents);
-
-                    var left = that.mainGameObj.arrayOfRectangle[aa].style.left;
-                    var leftInt = parseInt(left) + 10;
-                    that.opponents.style.top = topInt + "px";
-                    that.opponents.style.left = leftInt + "px";
-                    that.mainGameObj.arrayOfRectangle.push(that.opponents);
+                    that.opponent = document.createElement("div");
+                    that.opponent.className = "opponent";
+                    that.playerRectObj.mainGameObj.gameBodyContainer.appendChild(that.opponent);
+                    var ol = that.playerRectObj.mainGameObj.arrayOfRectangle[opponentIndex].style.left;
+                    that.opponentX = parseInt(ol);
+                    that.opponent.style.top = that.opponentY + "px";
+                    that.opponent.style.left = that.opponentX + "px";
+                    that.playerRectObj.mainGameObj.opponentArray.push(that.opponent);
                 }
             }
 
-        }
+        }        
     };
+    
+    
     function getrandom(start, end) {
         return Math.random() * (end - start) + start;
     }
 }
-
 
 
 
