@@ -1,12 +1,8 @@
 @charset "utf-8";
-*
-{
-    margin: 0px;
-    padding: 0px;
-}
+
 #wrapper
 {
-    height:650px;
+    height:630px;
     width:400px;
     margin: 0 auto;	
     position:relative;
@@ -14,7 +10,7 @@
     background-color: antiquewhite;
 }
 	
-.rectangle
+.normalRectangle
 {
     height:10px;
     width:50px;
@@ -26,7 +22,7 @@
     left:0px;
     z-index: 5;
 }
-.redRectangle
+.breakRectangle
 {
     height:10px;
     width:50px;
@@ -39,7 +35,7 @@
     z-index: 5;
 }
 
-.aquaRectangle
+.springRectangle
 {
     height:10px;
     width:50px;
@@ -53,34 +49,27 @@
 }
 .player
 {
-    height:40px;
-    width:30px; 
-    background-color: blue;
+    height:60px;
+    width:50px; 
+    background-color: transparent;
     position: absolute;
     border-radius: 10px;
     top:0px;
     left:0px;
     z-index: 10;
+    background-image:url('../images/minionsSprites4.png');
+  background-position:0px 0px;
     /*background-image:*/ 
     /*background-image: url(../images/Evil_minion1.png);*/
 }
-    
-.opponents
-{
-    height:50px;
-    width:50px;
-    background-color:red;
-    position:absolute;
-    margin-right:5px;
-    top:0px;
-    left:0px;
-}
+ 
 
 .bullet
 {
-    height: 20px;
+    height: 40px;
     width: 10px;
-    background-color: blueviolet;
+    background-image:url('../images/bulletImage.png');
+    /*background-color: blueviolet;*/
     position: absolute;
     z-index: 7;
     
@@ -88,10 +77,12 @@
 
 .opponent
 {
-    height:30px;
-    width:30px; 
-    background-color: brown;
+    height:60px;
+    width:50px; 
+    background-color: transparent;
     position: absolute;
     border-radius: 10px;
+    background-image:url('../images/minionsSprites4.png');
+    background-position:-102px 0px;
     z-index: 8;
 }
