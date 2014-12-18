@@ -1,5 +1,10 @@
 var game = new MainGame();
+//playAudio("music/mainbg.mp3");
+function startGame() {
+    
+    document.getElementById("menuscreen").style.display = "none";
 game.init();
+}
 function MainGame()
 {
     this.counter = 0;
@@ -23,7 +28,30 @@ function MainGame()
     this.gameLevel=1;
     var playerObj;
     var that = this;
-    this.init = function() {
+    this.init = function () {
+        var playerfrmDOM = document.getElementsByClassName("player")[0];
+        that.score = 0;
+        that.breakRectangleIndexArray = [];
+        that.springRectangleIndexArray = [];
+        
+       
+
+        for (var i = 0; i < that.arrayOfRectangle.length; i++) {
+
+            that.gameBodyContainer.removeChild(that.arrayOfRectangle[i]);
+        }
+
+        for (var i = 0; i < that.opponentArray.length; i++) {
+
+            that.gameBodyContainer.removeChild(that.opponentArray[i]);
+        }
+        that.arrayOfRectangle = [];
+        that.opponentArray = [];
+       
+        //that.gameBodyContainer.removeChild(playerfrmDOM);
+        
+
+
         that.createNormalAdditionalRectangle();
         that.createNormalRectangle();
         that.createBreakrectangle();
@@ -162,6 +190,10 @@ function MainGame()
         {            
             that.forClearInterval();
             alert("LEVEL 1 COMPLETED");
+
+            document.getElementById("wrapper").removeChild(that.player);
+            document.getElementById("playbtn").style.background = "url(images/playagain.png)";
+            document.getElementById("menuscreen").style.display = "block";
         }
     };
 }
@@ -247,11 +279,24 @@ function Player(thatMainGame)
         that.player.style.color = "red";
         if (that.playerY > 570)
         {
-            alert("GAME OVER PLAYER MOVED DOWN");
-            that.mainGameObj.forClearInterval();            
+           
+            that.mainGameObj.forClearInterval();
+
+            document.getElementById("wrapper").removeChild(that.player);
+            try {
+                document.getElementById("wrapper").removeChild(that.bullet);
+           
+            } catch(e) {
+
+            }
+            playAudio("music/mainbg.mp3");
+            //playAudio("music/ohhhh.mp3");
+            document.getElementById("playbtn").style.background = "url(images/playagain.png)";
+            document.getElementsByClassName("ScoreDiv")[0].innerHTML = "Current Score :- "+thatMainGame.score;
+            document.getElementById("menuscreen").style.display = "block";
         }
     };
-    
+   
     this.changeOpponentImage=function()
     {
         for(var i=0;i<that.mainGameObj.opponentArray.length;i++)
@@ -314,16 +359,19 @@ function Player(thatMainGame)
                 {
                     that.mainGameObj.gameBodyContainer.removeChild(that.mainGameObj.arrayOfRectangle[i]);
                     that.mainGameObj.arrayOfRectangle.splice(i, 1);
+                    thatMainGame.score -= 50;
                 }
                 else if (that.mainGameObj.arrayOfRectangle[i].className == "springRectangle")
-                {                    
+                {
                     that.mainGameObj.fastMove = 1;
+                    thatMainGame.score += 1000;
                     that.mainGameObj.rectangleMoveToDown(that.mainGameObj.fastMove);
                     goUp = 1;
                 }
                 else {
                     that.mainGameObj.arrayOfRectangle[i].style.backgroundColor = "green";
                     goUp = 1;
+                    thatMainGame.score += 100;
                 }
             }
 
@@ -331,18 +379,27 @@ function Player(thatMainGame)
     };
 
 
-    this.opponentPlayerCollide= function()
-    {
-        for(var i=0;i<that.mainGameObj.opponentArray.length;i++)
-        {
-        var opX=parseInt(that.mainGameObj.opponentArray[i].style.left);
-        var opY=parseInt(that.mainGameObj.opponentArray[i].style.top);              
-        if (that.playerX < opX + 50 && that.playerX + 50 > opX && that.playerY < opY + 60 &&   60 + that.playerY > opY)
-            {       
-                alert("GAME OVER!!!! Player Opponent collision detected");
-                that.mainGameObj.forClearInterval(); 
+    this.opponentPlayerCollide = function () {
+        for (var i = 0; i < that.mainGameObj.opponentArray.length; i++) {
+            var opX = parseInt(that.mainGameObj.opponentArray[i].style.left);
+            var opY = parseInt(that.mainGameObj.opponentArray[i].style.top);
+            if (that.playerX < opX + 50 && that.playerX + 50 > opX && that.playerY < opY + 60 && 60 + that.playerY > opY) {
+
+                playAudio("music/ohhhh.mp3");
+                document.getElementById("wrapper").removeChild(that.player);
+                try {
+                    document.getElementById("wrapper").removeChild(that.bullet);
+
+                } catch(e) {
+                }
+
+                document.getElementById("playbtn").style.background = "url(images/playagain.png)";
+                document.getElementsByClassName("ScoreDiv")[0].innerHTML = "Current Score :- " + thatMainGame.score;
+
+                document.getElementById("menuscreen").style.display = "block";
+                that.mainGameObj.forClearInterval();
             }
-        }       
+        }
     };
     
     
@@ -352,8 +409,9 @@ function Player(thatMainGame)
         {
         var opX=parseInt(that.mainGameObj.opponentArray[i].style.left);
         var opY=parseInt(that.mainGameObj.opponentArray[i].style.top);              
-        if (that.bulletX < opX + 50 && that.bulletX + 10 > opX && that.bulletY < opY + 60 &&   40 + that.bulletY > opY)
-            {    
+        if (that.bulletX < opX + 50 && that.bulletX + 10 > opX && that.bulletY < opY + 60 &&   40 + that.bulletY > opY) {
+            thatMainGame.score += 1000;
+            playAudio("music/yeah.mp3");
             that.mainGameObj.gameBodyContainer.removeChild(that.mainGameObj.opponentArray[i]);
             that.mainGameObj.gameBodyContainer.removeChild(that.bullet);
             that.mainGameObj.opponentArray.splice(i, 1);            

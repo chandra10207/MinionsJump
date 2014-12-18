@@ -1,5 +1,8 @@
 @charset "utf-8";
 
+body {
+    background-color: #598005;
+}
 #wrapper
 {
     height:630px;
@@ -86,3 +89,69 @@
     background-position:-102px 0px;
     z-index: 8;
 }
+
+
+/*for menu screen*/
+
+                   
+#score {
+    position: absolute;
+    top:0px;
+    left: 139px;
+    z-index: 100;
+    font-size: 30px;
+    
+}
+#menuscreen {
+    background-color: brown;
+    height:630px;
+    width:400px;
+    margin: 0 auto;	
+    background-repeat: no-repeat;   
+    background-position: top;
+    left: 483px;
+    
+    position: absolute;
+    z-index: 14;
+    
+    border: 5px #f2420e double;
+}
+.logo {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+}
+.menu img {
+    border-width: 0px;
+}
+.playbtn {
+    background-image: url('../Images/play.png');
+   
+    height: 104px;
+    width: 400px;
+    background-repeat: no-repeat;
+    margin-top: 300px;
+    
+    border-width: 0px;
+    border: none;
+     
+}
+
+.highscorediv {
+    font: 30px sans-serif;
+    color: darkgoldenrod;
+    
+      margin-top: 30px;
+    margin-left: 200px;
+    
+}
+.ScoreDiv {
+    font: 30px sans-serif;
+    color: rgb(228, 255, 0);
+    margin-top: 10px;
+    margin-left: 20px;
+    
+}
+
+
+/*for menu screen*/
